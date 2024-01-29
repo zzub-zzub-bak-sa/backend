@@ -16,8 +16,44 @@ datasource db {
 }
 
 model User {
+  //TODO: 로그인 방식에 따라 바뀔 예정
   id        String   @id
   nickname  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  folders Folder[]
+  posts   Post[]
+}
+
+model Folder {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  posts Post[]
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  url       String
+  content   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId   String
+  folderId Int
+  user     User   @relation(fields: [userId], references: [id])
+  folder   Folder @relation(fields: [folderId], references: [id])
+  tags     Tag[]
+}
+
+model Tag {
+  id    Int    @id @default(autoincrement())
+  name  String
+  posts Post[]
 }
