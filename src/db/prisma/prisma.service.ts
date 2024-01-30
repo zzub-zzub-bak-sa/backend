@@ -8,6 +8,7 @@ import { afterCreateUserMiddleware } from './middlewares/afterCreateUser.middlew
 export class PrismaService extends PrismaClient implements OnModuleInit {
   async onModuleInit() {
     await this.$connect();
+    this.useMiddlewares();
   }
 
   async enableShutdownHooks(app: INestApplication) {
