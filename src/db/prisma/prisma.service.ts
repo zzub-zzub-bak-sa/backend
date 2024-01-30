@@ -2,6 +2,7 @@
 // @ts-nocheck
 import { INestApplication, Injectable, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
+import { afterCreateUserMiddleware } from './middlewares/afterCreateUser.middleware';
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
@@ -13,5 +14,9 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     this.$on('beforeExit', async () => {
       await app.close();
     });
+  }
+
+  async useMiddlewares() {
+    this.$use(afterCreateUserMiddleware(this));
   }
 }

@@ -1,6 +1,6 @@
 import { User, Prisma, PrismaClient } from '@prisma/client';
 
-export const afterCreateCustomerMiddleware: (
+export const afterCreateUserMiddleware: (
   prisma: PrismaClient,
 ) => Prisma.Middleware<User> = (prisma) => async (params, next) => {
   const user = await next(params);
