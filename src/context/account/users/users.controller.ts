@@ -14,7 +14,6 @@ export class UsersController {
 
   @Post('sign-in')
   signIn(@Body('id') id: string) {
-    console.log(id);
     return this.usersService.signIn(id);
   }
 
