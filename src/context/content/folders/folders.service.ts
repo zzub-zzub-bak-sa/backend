@@ -47,8 +47,13 @@ export class FoldersService {
   async getFolder(user: User, id: number) {
     const folder = await this.prismaService.folder.findUnique({
       where: { id, userId: user.id },
-      include: { _count: { select: { posts: true } } },
+      include: {
+        posts: { where: { isDeleted: false }, include: { tags: true } },
+      },
     });
+    if (!folder) throw new Exception(ExceptionCode.NotFound);
+    if (folder.isDeleted)
+      throw new Exception(ExceptionCode.BadRequest, '삭제된 폴더입니다.');
 
     return folder;
   }
@@ -78,7 +83,7 @@ export class FoldersService {
     return folder;
   }
 
-  async restore(user: User, id: number) {
+  async restoreFolder(user: User, id: number) {
     const folder = await this.prismaService.folder.update({
       where: { id, userId: user.id },
       data: {

@@ -53,4 +53,10 @@ export class FoldersController {
   deleteFolder(@User() user: TUser, @Param('id', ParseIntPipe) id: number) {
     return this.foldersService.deleteFolder(user, id);
   }
+
+  @Put(':id/restore')
+  @Roles(ROLE.USER)
+  restoreFolder(@User() user: TUser, @Param('id', ParseIntPipe) id: number) {
+    return this.foldersService.restoreFolder(user, id);
+  }
 }
