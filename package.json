@@ -1,5 +1,5 @@
 {
-  "name": "poten-401",
+  "name": "zzub-zzub-bak-sa-server",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -13,6 +13,7 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "prisma:studio:dev": "dotenv -e .env.local -- prisma studio",
+    "prisma:push": "dotenv -e .env.local -- prisma db push",
     "prisma:migrate:dev": "dotenv -e .env.local -- prisma migrate dev",
     "prisma:generate:dev": "dotenv -e .env.local -- prisma generate",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
@@ -33,9 +34,10 @@
     "body-parser": "^1.20.2",
     "helmet": "^6.0.1",
     "jsonwebtoken": "^9.0.0",
+    "lodash": "^4.17.21",
     "nanoid": "^3.0.0",
-    "request-ip": "^3.3.0",
     "reflect-metadata": "^0.1.13",
+    "request-ip": "^3.3.0",
     "rxjs": "^7.2.0"
   },
   "devDependencies": {
@@ -45,6 +47,7 @@
     "@types/bcrypt": "^5.0.0",
     "@types/express": "^4.17.13",
     "@types/jest": "29.5.0",
+    "@types/lodash": "^4.14.202",
     "@types/node": "18.15.11",
     "@types/request-ip": "^0.0.37",
     "@types/supertest": "^2.0.11",

@@ -5,18 +5,12 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// datasource db {
-//   provider = "mysql"
-//   url      = env("DATABASE_URL")
-// }
-
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  //TODO: 로그인 방식에 따라 바뀔 예정
   id        String   @id
   nickname  String?
   createdAt DateTime @default(now())
@@ -31,6 +25,8 @@ model Folder {
   name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  assetType Int      @default(1)
+  isDeleted Boolean  @default(false)
 
   userId String
   user   User   @relation(fields: [userId], references: [id])
@@ -44,6 +40,7 @@ model Post {
   content   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  isDeleted Boolean  @default(false)
 
   userId   String
   folderId Int
