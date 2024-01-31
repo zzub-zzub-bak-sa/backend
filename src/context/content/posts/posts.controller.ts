@@ -1,30 +1,18 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  ParseIntPipe,
-  Post,
-  Put,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { Roles } from 'src/decorators/roles.decorator';
 import { ROLE } from 'src/context/account/account.constant';
 import { User } from 'src/decorators/user.decorator';
 import { User as TUser } from '@prisma/client';
+import { CreatePostDto } from './posts.dto';
 
 @Controller('/content/posts')
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
-  @Get(':folderId')
+  @Post()
   @Roles(ROLE.USER)
-  getPosts(
-    @User() user: TUser,
-    @Param('folderId', ParseIntPipe) folderId: number,
-  ) {
-    return this.postsService.getPosts(user, folderId);
+  createPost(@User() user: TUser, @Body() createPostDto: CreatePostDto) {
+    return this.postsService.createPost(user, createPostDto);
   }
 }
