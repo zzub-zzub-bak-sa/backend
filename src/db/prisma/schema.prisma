@@ -42,11 +42,12 @@ model Post {
   updatedAt DateTime @updatedAt
   isDeleted Boolean  @default(false)
 
-  userId   String
-  folderId Int
-  user     User   @relation(fields: [userId], references: [id])
-  folder   Folder @relation(fields: [folderId], references: [id])
-  tags     Tag[]
+  userId    String
+  folderId  Int
+  user      User   @relation(fields: [userId], references: [id])
+  folder    Folder @relation(fields: [folderId], references: [id])
+  tags      Tag[]
+  viewCount Int    @default(0)
 }
 
 model Tag {

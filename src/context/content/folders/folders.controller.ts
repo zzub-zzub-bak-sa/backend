@@ -15,6 +15,7 @@ import { ROLE } from 'src/context/account/account.constant';
 import { User } from 'src/decorators/user.decorator';
 import { User as TUser } from '@prisma/client';
 import { CreateFolderDto, UpdateFolderDto } from './folders.dto';
+import { FolderSortType } from './folders.type';
 
 @Controller('/content/folders')
 export class FoldersController {
@@ -26,10 +27,28 @@ export class FoldersController {
     return this.foldersService.createFolder(user, createFolderDto);
   }
 
-  @Get()
+  @Get('by-sharing')
   @Roles(ROLE.USER)
   getFoldersBySharing(@User() user: TUser, @Query('keyword') keyword?: string) {
     return this.foldersService.getFoldersBySharing(user, keyword);
+  }
+
+  @Get('home')
+  @Roles(ROLE.USER)
+  getFoldersForHome(@User() user: TUser, @Query('sort') sort?: FolderSortType) {
+    return this.foldersService.getFoldersForHome(user, sort);
+  }
+
+  @Get('search')
+  @Roles(ROLE.USER)
+  search(@User() user: TUser, @Query('keyword') keyword?: string) {
+    return this.foldersService.search(user, keyword);
+  }
+
+  @Get('auto-complete')
+  @Roles(ROLE.USER)
+  autoComplete(@User() user: TUser, @Query('keyword') keyword?: string) {
+    return this.foldersService.autoComplete(user, keyword);
   }
 
   @Get(':id')

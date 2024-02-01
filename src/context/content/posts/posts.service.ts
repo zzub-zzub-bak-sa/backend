@@ -35,4 +35,17 @@ export class PostsService {
 
     return post;
   }
+
+  async getPostsByKeyword(user: User, keyword: string) {
+    const posts = await this.prismaService.post.findMany({
+      where: {
+        userId: user.id,
+        isDeleted: false,
+        tags: { some: { name: { contains: keyword } } },
+      },
+      include: { tags: { where: { name: { contains: keyword } }, take: 1 } },
+    });
+
+    return posts;
+  }
 }
