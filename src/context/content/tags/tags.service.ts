@@ -24,4 +24,29 @@ export class TagsService {
 
     return tags;
   }
+
+  async getTagsByFolderId(user: User, folderId: number, keyword?: string) {
+    const tags = uniq(
+      await this.prismaService.folder
+        .findUnique({
+          where: { userId: user.id, id: folderId },
+          select: {
+            posts: {
+              where: { isDeleted: false },
+              select: {
+                tags: {
+                  where: { name: keyword ? { contains: keyword } : {} },
+                  select: { name: true },
+                },
+              },
+            },
+          },
+        })
+        .then((folder) =>
+          folder.posts.flatMap((post) => post.tags.map((tag) => tag.name)),
+        ),
+    );
+
+    return tags;
+  }
 }

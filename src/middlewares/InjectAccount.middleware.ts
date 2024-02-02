@@ -45,6 +45,7 @@ export class InjectAccountMiddleware implements NestMiddleware {
         where: { id: sub as string },
       };
       const user = await this.prismaService.user.findUnique(args);
+      if (!user.isApproved) throw (new Error().name = 'unauthorizedUser');
 
       req.user = user;
 
@@ -54,6 +55,11 @@ export class InjectAccountMiddleware implements NestMiddleware {
       switch (errorName) {
         case 'TokenExpiredError':
           throw new Exception(ExceptionCode.ExpiredAccessToken);
+        case 'unauthorizedUser':
+          throw new Exception(
+            ExceptionCode.Unauthorized,
+            '개인정보처리방침 승인 철회 유저입니다. 개발팀에 문의하세요.',
+          );
         default:
           throw new Exception(
             ExceptionCode.InvalidToken,

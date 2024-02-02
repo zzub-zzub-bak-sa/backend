@@ -16,6 +16,7 @@ import { User } from 'src/decorators/user.decorator';
 import { User as TUser } from '@prisma/client';
 import { CreateFolderDto, UpdateFolderDto } from './folders.dto';
 import { FolderSortType } from './folders.type';
+import { ParseBooleanPipe } from 'src/app.pipe';
 
 @Controller('/content/folders')
 export class FoldersController {
@@ -41,14 +42,26 @@ export class FoldersController {
 
   @Get('search')
   @Roles(ROLE.USER)
-  search(@User() user: TUser, @Query('keyword') keyword?: string) {
-    return this.foldersService.search(user, keyword);
+  search(
+    @User() user: TUser,
+    @Query('keyword') keyword?: string,
+    @Query('folderOnly', ParseBooleanPipe) folderOnly?: boolean,
+  ) {
+    return this.foldersService.search(user, keyword, folderOnly);
   }
 
   @Get('auto-complete')
   @Roles(ROLE.USER)
-  autoComplete(@User() user: TUser, @Query('keyword') keyword?: string) {
-    return this.foldersService.autoComplete(user, keyword);
+  autoComplete(
+    @User() user: TUser,
+    @Query('keyword') keyword?: string,
+    @Query('folderId') folderId?: string,
+  ) {
+    return this.foldersService.autoComplete(
+      user,
+      keyword,
+      folderId ? Number(folderId) : undefined,
+    );
   }
 
   @Get(':id')
@@ -71,11 +84,5 @@ export class FoldersController {
   @Roles(ROLE.USER)
   deleteFolder(@User() user: TUser, @Param('id', ParseIntPipe) id: number) {
     return this.foldersService.deleteFolder(user, id);
-  }
-
-  @Put(':id/restore')
-  @Roles(ROLE.USER)
-  restoreFolder(@User() user: TUser, @Param('id', ParseIntPipe) id: number) {
-    return this.foldersService.restoreFolder(user, id);
   }
 }

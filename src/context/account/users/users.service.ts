@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/db/prisma/prisma.service';
 import { User } from '@prisma/client';
-import * as jwt from 'jsonwebtoken';
 import { JwtPayload, sign } from 'jsonwebtoken';
 import { ROLE, TOKEN_TYPE } from '../account.constant';
 import { Exception, ExceptionCode } from 'src/app.exception';
@@ -29,6 +28,12 @@ export class UsersService {
     if (!user) {
       throw new Exception(ExceptionCode.NotFound);
     }
+    if (!user.isApproved)
+      throw new Exception(
+        ExceptionCode.Unauthorized,
+        '개인정보처리방침 승인 철회 유저입니다. 개발팀에 문의하세요.',
+      );
+
     const accessToken = await this.createAccessToken(user);
 
     return { accessToken };
@@ -61,5 +66,22 @@ export class UsersService {
     const accessToken: string = sign(payload, secret, { expiresIn });
 
     return accessToken;
+  }
+
+  async withdrawApproval(user: User) {
+    return this.prismaService.user.update({
+      where: { id: user.id },
+      data: { isApproved: true },
+    });
+  }
+
+  async getMe(user: User) {
+    return this.prismaService.user.findUnique({ where: { id: user.id } });
+  }
+
+  async updateUser(user: User, nickname: string) {
+    return this.prismaService.user.findUnique({
+      where: { id: user.id, nickname },
+    });
   }
 }

@@ -1,4 +1,5 @@
 import { User, Prisma, PrismaClient } from '@prisma/client';
+import { DEFAULT_NAME } from 'src/utils/defaultName.constant';
 
 export const afterCreateUserMiddleware: (
   prisma: PrismaClient,
@@ -11,7 +12,7 @@ export const afterCreateUserMiddleware: (
   if (model === 'User' && action === 'create') {
     await prisma.folder.create({
       data: {
-        name: '기본 폴더',
+        name: DEFAULT_NAME,
         user: { connect: { id: user.id } },
         assetType,
       },

@@ -7,6 +7,7 @@ import { FolderSortType } from './folders.type';
 import { PostsService } from '../posts/posts.service';
 import { TagsService } from '../tags/tags.service';
 import { uniq } from 'lodash';
+import { DEFAULT_NAME } from 'src/utils/defaultName.constant';
 
 @Injectable()
 export class FoldersService {
@@ -34,7 +35,6 @@ export class FoldersService {
 
     let folderWhereInput: Prisma.FolderWhereInput = {
       userId,
-      isDeleted: false,
     };
     if (keyword) {
       folderWhereInput = {
@@ -58,7 +58,6 @@ export class FoldersService {
     const folders = await this.prismaService.folder.findMany({
       where: {
         userId,
-        isDeleted: false,
       },
       orderBy:
         sort === 'newest'
@@ -72,32 +71,37 @@ export class FoldersService {
   }
 
   // 홈화면 검색
-  async search(user: User, keyword: string) {
+  async search(user: User, keyword: string, folderOnly?: boolean) {
     if (!keyword || !keyword?.length) return;
 
     const folders = await this.prismaService.folder.findMany({
-      where: { userId: user.id, name: { contains: keyword }, isDeleted: false },
+      where: { userId: user.id, name: { contains: keyword } },
     });
+    if (folderOnly) return folders;
+
     const posts = await this.postsService.getPostsByKeyword(user, keyword);
 
     return { folders, posts };
   }
 
-  async autoComplete(user: User, keyword: string) {
+  async autoComplete(user: User, keyword: string, folderId?: number) {
     if (!keyword || !keyword?.length) return;
-    const folderNames = await this.prismaService.folder
-      .findMany({
-        where: {
-          userId: user.id,
-          name: { contains: keyword },
-          isDeleted: false,
-        },
-        select: { name: true },
-      })
-      .then((folders) => folders.map((folder) => folder.name));
-    const tags = await this.tagsService.getTags(user, keyword);
+    if (!folderId) {
+      const folderNames = await this.prismaService.folder
+        .findMany({
+          where: {
+            userId: user.id,
+            name: { contains: keyword },
+          },
+          select: { name: true },
+        })
+        .then((folders) => folders.map((folder) => folder.name));
+      const tags = await this.tagsService.getTags(user, keyword);
 
-    return uniq([...folderNames, ...tags]);
+      return uniq([...folderNames, ...tags]);
+    } else {
+      return this.tagsService.getTagsByFolderId(user, folderId, keyword);
+    }
   }
 
   async getFolder(user: User, id: number) {
@@ -108,15 +112,18 @@ export class FoldersService {
       },
     });
     if (!folder) throw new Exception(ExceptionCode.NotFound);
-    if (folder.isDeleted)
-      throw new Exception(ExceptionCode.BadRequest, '삭제된 폴더입니다.');
 
     return folder;
   }
 
   async updateFolder(user: User, id: number, updateFolderDto: UpdateFolderDto) {
     const { assetType, name } = updateFolderDto;
-    this.barrier_folderNameMustBeUniqueWhenUpdatingFolder(id, name);
+    await this.barrier_defaultFolderNameShouldNotBeUpdated(user.id, id, name);
+    await this.barrier_folderNameMustBeUniqueWhenUpdatingFolder(
+      user.id,
+      id,
+      name,
+    );
     const folder = await this.prismaService.folder.update({
       where: { id, userId: user.id },
       data: { assetType, name },
@@ -126,31 +133,20 @@ export class FoldersService {
   }
 
   async deleteFolder(user: User, id: number) {
-    const folder = await this.prismaService.folder.update({
+    await this.prismaService.folder.update({
       where: { id, userId: user.id },
       data: {
-        isDeleted: true,
         posts: {
           updateMany: { where: { folderId: id }, data: { isDeleted: true } },
         },
       },
     });
 
-    return folder;
-  }
-
-  async restoreFolder(user: User, id: number) {
-    const folder = await this.prismaService.folder.update({
+    const deletedFolder = await this.prismaService.folder.delete({
       where: { id, userId: user.id },
-      data: {
-        isDeleted: false,
-        posts: {
-          updateMany: { where: { folderId: id }, data: { isDeleted: false } },
-        },
-      },
     });
 
-    return folder;
+    return deletedFolder;
   }
 
   private async barrier_folderNameMustBeUniqueWhenCreatingFolder(
@@ -169,17 +165,35 @@ export class FoldersService {
   }
 
   private async barrier_folderNameMustBeUniqueWhenUpdatingFolder(
+    userId: string,
     folderId: number,
     name: string,
   ) {
     const existingFolder = await this.prismaService.folder.findFirst({
-      where: { id: { not: folderId }, name },
+      where: { id: { not: folderId }, name, userId },
     });
 
     if (existingFolder)
       throw new Exception(
         ExceptionCode.AlreadyUsedValue,
         '같은 이름의 폴더가 존재합니다.',
+      );
+  }
+
+  private async barrier_defaultFolderNameShouldNotBeUpdated(
+    userId: string,
+    folderId: number,
+    name: string,
+  ) {
+    const prevFolder = await this.prismaService.folder.findUnique({
+      where: { userId, id: folderId },
+      select: { name: true },
+    });
+
+    if (prevFolder.name === DEFAULT_NAME && name !== DEFAULT_NAME)
+      throw new Exception(
+        ExceptionCode.BadRequest,
+        '기본 폴더의 이름은 변경할 수 없습니다.',
       );
   }
 }
