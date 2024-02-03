@@ -43,7 +43,7 @@ export class PostsController {
     return this.postsService.deletePosts(user, deletePostsDto);
   }
 
-  @Delete()
+  @Delete('permanently')
   @Roles(ROLE.USER)
   deletePostsPermanently(
     @User() user: TUser,
