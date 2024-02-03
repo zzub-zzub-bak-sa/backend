@@ -17,6 +17,7 @@ import { User as TUser } from '@prisma/client';
 import { CreateFolderDto, UpdateFolderDto } from './folders.dto';
 import { FolderSortType } from './folders.type';
 import { ParseBooleanPipe } from 'src/app.pipe';
+import { PostSortType } from '../posts/posts.type';
 
 @Controller('/content/folders')
 export class FoldersController {
@@ -66,8 +67,12 @@ export class FoldersController {
 
   @Get(':id')
   @Roles(ROLE.USER)
-  getFolder(@User() user: TUser, @Param('id', ParseIntPipe) id: number) {
-    return this.foldersService.getFolder(user, id);
+  getFolder(
+    @User() user: TUser,
+    @Param('id', ParseIntPipe) id: number,
+    @Query('sort') sort: PostSortType,
+  ) {
+    return this.foldersService.getFolder(user, id, sort);
   }
 
   @Put(':id')

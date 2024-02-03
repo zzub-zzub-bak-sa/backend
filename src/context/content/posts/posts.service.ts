@@ -11,6 +11,7 @@ import {
 import { getContentUrlByUrl } from 'src/utils/getContentUrlByUrl';
 import { difference } from 'lodash';
 import { DEFAULT_NAME } from 'src/utils/defaultName.constant';
+import { PostSortType } from './posts.type';
 
 @Injectable()
 export class PostsService {
@@ -60,7 +61,12 @@ export class PostsService {
     return posts;
   }
 
-  async searchPosts(user: User, keywords: string[], folderId: number) {
+  async searchPosts(
+    user: User,
+    keywords: string[],
+    folderId: number,
+    sort: PostSortType,
+  ) {
     let postWhereInput: Prisma.PostWhereInput = {
       userId: user.id,
       isDeleted: false,
@@ -72,16 +78,28 @@ export class PostsService {
       }));
       postWhereInput = { ...postWhereInput, OR };
     }
+    const orderBy: Prisma.PostOrderByWithRelationInput =
+      sort === 'oldest'
+        ? {
+            createdAt: 'asc',
+          }
+        : sort === 'recommend'
+        ? { viewCount: 'desc' }
+        : {
+            createdAt: 'desc',
+          };
 
     let posts: Record<string, any> = await this.prismaService.post.findMany({
       where: postWhereInput,
       include: { tags: true },
+      orderBy,
     });
     if (!posts) {
       posts = await this.prismaService.post
         .findMany({
           where: { userId: user.id, isDeleted: false, folderId },
           include: { _count: { select: { tags: true } } },
+          orderBy,
         })
         .then((posts) => posts.filter((post) => post._count.tags === 0));
     }
@@ -121,8 +139,9 @@ export class PostsService {
   }
 
   async getPost(user: User, id: number) {
-    const post = await this.prismaService.post.findUnique({
+    const post = await this.prismaService.post.update({
       where: { userId: user.id, id },
+      data: { viewCount: { increment: 1 } },
       include: { tags: true },
     });
 

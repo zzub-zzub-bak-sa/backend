@@ -15,6 +15,7 @@ import { ROLE } from 'src/context/account/account.constant';
 import { User } from 'src/decorators/user.decorator';
 import { User as TUser } from '@prisma/client';
 import { CreatePostDto, DeletePostsDto, RestorePostsDto } from './posts.dto';
+import { PostSortType } from './posts.type';
 
 @Controller('/content/posts')
 export class PostsController {
@@ -33,8 +34,14 @@ export class PostsController {
     @User() user: TUser,
     @Query('keywords') keywords: string[],
     @Query('folderId') folderId: string,
+    @Query('sort') sort: PostSortType,
   ) {
-    return this.postsService.searchPosts(user, keywords, Number(folderId));
+    return this.postsService.searchPosts(
+      user,
+      keywords,
+      Number(folderId),
+      sort,
+    );
   }
 
   @Delete()
@@ -52,7 +59,7 @@ export class PostsController {
     return this.postsService.deletePostsPermanently(user, deletePostsDto);
   }
 
-  @Get('deleted')
+  @Get('bin')
   @Roles(ROLE.USER)
   getDeletedPosts(@User() user: TUser) {
     return this.postsService.getDeletedPosts(user);

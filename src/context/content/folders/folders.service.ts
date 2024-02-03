@@ -8,6 +8,7 @@ import { PostsService } from '../posts/posts.service';
 import { TagsService } from '../tags/tags.service';
 import { uniq } from 'lodash';
 import { DEFAULT_NAME } from 'src/utils/defaultName.constant';
+import { PostSortType } from '../posts/posts.type';
 
 @Injectable()
 export class FoldersService {
@@ -104,11 +105,26 @@ export class FoldersService {
     }
   }
 
-  async getFolder(user: User, id: number) {
+  async getFolder(user: User, id: number, sort: PostSortType) {
+    const orderBy: Prisma.PostOrderByWithRelationInput =
+      sort === 'oldest'
+        ? {
+            createdAt: 'asc',
+          }
+        : sort === 'recommend'
+        ? { viewCount: 'desc' }
+        : {
+            createdAt: 'desc',
+          };
+
     const folder = await this.prismaService.folder.findUnique({
       where: { id, userId: user.id },
       include: {
-        posts: { where: { isDeleted: false }, include: { tags: true } },
+        posts: {
+          where: { isDeleted: false },
+          include: { tags: true },
+          orderBy,
+        },
       },
     });
     if (!folder) throw new Exception(ExceptionCode.NotFound);
