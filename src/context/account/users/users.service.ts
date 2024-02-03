@@ -69,19 +69,25 @@ export class UsersService {
   }
 
   async withdrawApproval(user: User) {
-    return this.prismaService.user.update({
+    const updatedUser = this.prismaService.user.update({
       where: { id: user.id },
       data: { isApproved: true },
     });
+
+    return updatedUser;
   }
 
   async getMe(user: User) {
-    return this.prismaService.user.findUnique({ where: { id: user.id } });
+    const me = this.prismaService.user.findUnique({ where: { id: user.id } });
+
+    return me;
   }
 
   async updateUser(user: User, nickname: string) {
-    return this.prismaService.user.findUnique({
+    const updatedUser = await this.prismaService.user.findUnique({
       where: { id: user.id, nickname },
     });
+
+    return updatedUser;
   }
 }
