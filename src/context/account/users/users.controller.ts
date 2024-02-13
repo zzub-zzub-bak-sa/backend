@@ -10,6 +10,10 @@ import { ROLE } from '../account.constant';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Get('test') test(@Query('withError') withError?: boolean) {
+    return this.usersService.test(withError);
+  }
+
   @Post()
   createUser(@Body() createUserDto: CreateUserDto) {
     return this.usersService.createUser(createUserDto);
