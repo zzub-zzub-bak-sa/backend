@@ -34,6 +34,12 @@ jobs:
           docker build -t ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}:${DOCKER_IMAGE_TAG} .
           docker push ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}:${DOCKER_IMAGE_TAG}
 
+      - name: Save Docker Compose Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: docker-compose
+          path: .
+
   deploy:
     runs-on: ubuntu-latest
 
