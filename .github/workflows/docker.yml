@@ -128,11 +128,11 @@ jobs:
           username: ${{ secrets.NCP_ACCESS_KEY }}
           password: ${{ secrets.NCP_SECRET_KEY }}
 
-      - name: Download Docker Compose Artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: docker-compose
-          path: ./docker-compose.yml
+      # - name: Download Docker Compose Artifact
+      #   uses: actions/download-artifact@v2
+      #   with:
+      #     name: docker-compose
+      #     path: ./docker-compose.yml
 
       - name: Download env Artifact
         uses: actions/download-artifact@v2
@@ -147,11 +147,11 @@ jobs:
           echo "Pulling latest image from registry..."
           docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}:${DOCKER_IMAGE_TAG}
 
-      - name: Set up Docker Compose
-        run: |
-          sudo rm /usr/local/bin/docker-compose
-          sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-          sudo chmod +x /usr/local/bin/docker-compose
+      # - name: Set up Docker Compose
+      #   run: |
+      #     sudo rm /usr/local/bin/docker-compose
+      #     sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+      #     sudo chmod +x /usr/local/bin/docker-compose
 
       - name: Set up Node.js for Deploy
         uses: actions/setup-node@v3
