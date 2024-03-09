@@ -139,11 +139,11 @@ jobs:
         with:
           name: env
           path: ./.env
-
+        
+      # export DOCKER_IMAGE_TAG=$(cat .env | grep DOCKER_IMAGE_TAG | cut -d'=' -f2)
+      # echo "DOCKER_IMAGE_TAG=${DOCKER_IMAGE_TAG}" > .env
       - name: Pull Docker Image
         run: |
-          export DOCKER_IMAGE_TAG=$(cat .env | grep DOCKER_IMAGE_TAG | cut -d'=' -f2)
-          echo "DOCKER_IMAGE_TAG=${DOCKER_IMAGE_TAG}" > .env
           echo "Pulling latest image from registry..."
           docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}:${DOCKER_IMAGE_TAG}
 
