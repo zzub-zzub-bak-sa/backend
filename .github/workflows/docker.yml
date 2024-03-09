@@ -146,11 +146,11 @@ jobs:
         run: |
           docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}:latest
 
-      # - name: Set up Docker Compose
-      #   run: |
-      #     sudo rm /usr/local/bin/docker-compose
-      #     sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-      #     sudo chmod +x /usr/local/bin/docker-compose
+      - name: Set up Docker Compose
+        run: |
+          sudo rm /usr/local/bin/docker-compose
+          sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
 
       - name: Set up Node.js for Deploy
         uses: actions/setup-node@v3
