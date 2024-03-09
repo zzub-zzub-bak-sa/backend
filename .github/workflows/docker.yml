@@ -40,42 +40,42 @@ jobs:
           name: docker-compose
           path: .
   deploy:
-  runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
 
-  needs: build
+    needs: build
 
-  steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
-    - name: Login to NCP Container Registry
-      uses: docker/login-action@v2
-      with:
-        registry: ${{ secrets.NCP_CONTAINER_REGISTRY }}
-        username: ${{ secrets.NCP_ACCESS_KEY }}
-        password: ${{ secrets.NCP_SECRET_KEY }}
+      - name: Login to NCP Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ secrets.NCP_CONTAINER_REGISTRY }}
+          username: ${{ secrets.NCP_ACCESS_KEY }}
+          password: ${{ secrets.NCP_SECRET_KEY }}
 
-    - name: Download Docker Compose Artifact
-      uses: actions/download-artifact@v2
-      with:
-        name: docker-compose
-        path: temp
+      - name: Download Docker Compose Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: docker-compose
+          path: temp
 
-    - name: Set up Docker Compose
-      run: |
-        sudo rm /usr/local/bin/docker-compose
-        sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-        sudo chmod +x /usr/local/bin/docker-compose
+      - name: Set up Docker Compose
+        run: |
+          sudo rm /usr/local/bin/docker-compose
+          sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
 
-    - name: Set up Node.js for Deploy
-      uses: actions/setup-node@v3
-      with:
-        node-version: 20  # 이 부분을 업데이트합니다.
+      - name: Set up Node.js for Deploy
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20  # 이 부분을 업데이트합니다.
 
-    - name: Deploy with Docker Compose
-      run: |
-        mv temp/docker-compose.yml .
-        docker-compose up -d
+      - name: Deploy with Docker Compose
+        run: |
+          mv temp/docker-compose.yml .
+          docker-compose up -d
 
 
 
