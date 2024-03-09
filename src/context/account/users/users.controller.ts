@@ -11,7 +11,8 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get('test') test(@Query('withError') withError?: boolean) {
-    return this.usersService.test(withError);
+    const test_version = '0.0.1/0309';
+    return test_version;
   }
 
   @Post()
