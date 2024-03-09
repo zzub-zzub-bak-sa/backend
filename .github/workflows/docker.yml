@@ -38,7 +38,9 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: docker-compose
-          path: ./docker-compose.yml ./.env
+          path: |
+          ./docker-compose.yml 
+          ./.env
   deploy:
     runs-on: ubuntu-latest
 
