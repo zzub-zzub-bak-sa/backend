@@ -38,7 +38,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: docker-compose
-          path: .
+          path: ./docker-compose.yml
   deploy:
     runs-on: ubuntu-latest
 
@@ -59,7 +59,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: docker-compose
-          path: temp
+          path: ./docker-compose.yml
 
       - name: Set up Docker Compose
         run: |
