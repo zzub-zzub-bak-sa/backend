@@ -144,7 +144,6 @@ jobs:
       # echo "DOCKER_IMAGE_TAG=${DOCKER_IMAGE_TAG}" > .env
       - name: Pull Docker Image
         run: |
-          echo "Pulling latest image from registry..."
           docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}:${DOCKER_IMAGE_TAG}
 
       # - name: Set up Docker Compose
