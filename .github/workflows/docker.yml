@@ -39,7 +39,6 @@ jobs:
         with:
           name: docker-compose
           path: .
-
   deploy:
     runs-on: ubuntu-latest
 
@@ -56,11 +55,13 @@ jobs:
           username: ${{ secrets.NCP_ACCESS_KEY }}
           password: ${{ secrets.NCP_SECRET_KEY }}
 
-      - name: Download Docker Compose Artifact
+      - name: Download Docker Compose YAML Artifact
         uses: actions/download-artifact@v2
         with:
           name: docker-compose
           path: .
+          filter: |
+            docker-compose.yml
 
       - name: Set up Docker Compose
         run: |
@@ -76,6 +77,7 @@ jobs:
       - name: Deploy with Docker Compose
         run: |
           docker-compose up -d
+
 
 
   pull_from_registry:
