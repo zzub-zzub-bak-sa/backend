@@ -38,9 +38,13 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: docker-compose
-          path: |
-          ./docker-compose.yml 
-          ./.env
+          path: ./docker-compose.yml 
+
+      - name: Save env Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: env
+          path: ./.env
   deploy:
     runs-on: ubuntu-latest
 
@@ -128,8 +132,14 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: docker-compose
-          path: ./docker-compose.yml ./.env
-            
+          path: ./docker-compose.yml
+
+      - name: Download env Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: env
+          path: ./.env
+
       - name: Pull Docker Image
         run: |
           export DOCKER_IMAGE_TAG=$(cat .env | grep DOCKER_IMAGE_TAG | cut -d'=' -f2)
