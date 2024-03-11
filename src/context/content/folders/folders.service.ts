@@ -56,19 +56,26 @@ export class FoldersService {
   async getFoldersForHome(user: User, sort?: FolderSortType) {
     const { id: userId } = user;
 
-    const folders = await this.prismaService.folder.findMany({
-      where: {
-        userId,
-      },
-      orderBy:
-        sort === 'newest'
-          ? { createdAt: 'desc' }
-          : sort === 'oldest'
-          ? { createdAt: 'asc' }
-          : { name: 'asc' },
-    });
+    const [folders, count] = await Promise.all([
+      this.prismaService.folder.findMany({
+        where: {
+          userId,
+        },
+        orderBy:
+          sort === 'newest'
+            ? { createdAt: 'desc' }
+            : sort === 'oldest'
+            ? { createdAt: 'asc' }
+            : { name: 'asc' },
+      }),
+      this.prismaService.folder.count({
+        where: {
+          userId,
+        },
+      }),
+    ]);
 
-    return folders;
+    return { folders, count };
   }
 
   // 홈화면 검색
