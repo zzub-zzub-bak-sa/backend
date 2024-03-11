@@ -9,6 +9,10 @@ import { ROLE } from '../account.constant';
 @Controller('/account/users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+  @Get('test')
+  getTest() {
+    return { updateDate: '0311' };
+  }
 
   @Post()
   createUser(@Body() createUserDto: CreateUserDto) {
