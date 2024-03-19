@@ -1,0 +1,60 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      -deploy
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Login to NCP Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ secrets.NCP_CONTAINER_REGISTRY }}
+          username: ${{ secrets.NCP_ACCESS_KEY }}
+          password: ${{ secrets.NCP_SECRET_KEY }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Create .env file
+        run: echo "DOCKER_IMAGE_TAG=latest" > .env
+
+      - name: Build and Push Docker Image
+        run: |
+          DOCKER_IMAGE_TAG=$(cat .env | grep DOCKER_IMAGE_TAG | cut -d'=' -f2)
+          docker build -t ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}:${DOCKER_IMAGE_TAG} .
+          docker push ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}:${DOCKER_IMAGE_TAG}
+
+      - name: Save Docker Compose Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: docker-compose
+          path: ./docker-compose.yml 
+
+  # pull_from_registry:
+  #   name: Connect server ssh and pull from container registry
+  #   needs: push_to_registry
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: connect ssh
+  #       uses: appleboy/ssh-action@master
+  #       with:
+  #         host: ${{ secrets.DEV_HOST }}
+  #         username: ${{ secrets.DEV_USERNAME }}
+  #         password: ${{ secrets.DEV_PASSWORD }}
+  #         port: ${{ secrets.DEV_PORT }}
+  #         script: |
+  #           docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/tag-name
+  #           docker stop $(docker ps -a -q)
+  #           docker rm $(docker ps -a -q)
+  #           docker run -d -p 3000:80 --env-file ${{ secrets.ENV_FILENAME_FRONTEND }} ${{ secrets.NCP_CONTAINER_REGISTRY }}/tag-name
+  #           docker image prune -f

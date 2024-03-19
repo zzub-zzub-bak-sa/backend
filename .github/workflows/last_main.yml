@@ -3,7 +3,8 @@ name: Build and Push Docker Image
 on:
   push:
     branches:
-      - deploy
+      - idonknowthat
+      # - deploy
 
 jobs:
   build:
@@ -40,11 +41,7 @@ jobs:
           name: docker-compose
           path: ./docker-compose.yml 
 
-      - name: Save env Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: env
-          path: ./.env
+
   deploy:
     runs-on: ubuntu-latest
 
