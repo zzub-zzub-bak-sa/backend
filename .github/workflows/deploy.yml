@@ -37,7 +37,7 @@ jobs:
       - name: Build and Push Docker Image
         run: |
           DOCKER_IMAGE_TAG=$(cat .env | grep DOCKER_IMAGE_TAG | cut -d'=' -f2)
-          docker build -t ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}:${{ secrets.DOCKER_IMAGE_TAG }} .
+          docker build -t mokkitlink .
           docker push ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}:${{ secrets.DOCKER_IMAGE_TAG }}
 
 
