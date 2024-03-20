@@ -9,8 +9,10 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import * as fs from 'fs';
 import * as http from 'http';
 import * as https from 'https';
+import * as dotenv from 'dotenv';
 
 async function bootstrap() {
+  dotenv.config();
   const privateKey = fs.readFileSync(
     '/etc/letsencrypt/live/mokkitlink.store/privkey.pem',
   );
