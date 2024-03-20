@@ -55,6 +55,7 @@ jobs:
           password: ${{ secrets.DEV_PASSWORD }}
           port: ${{ secrets.DEV_PORT }}
           script : | 
+            rm -rf mokkitlink
             if [ ! -d "mokkitlink" ]; then
               mkdir mokkitlink
             fi
@@ -68,7 +69,7 @@ jobs:
             fi
 
             cd 
-            
+
             echo ${{ secrets.NCP_SECRET_KEY }} | docker login -u ${{ secrets.NCP_ACCESS_KEY }} ${{ secrets.NCP_CONTAINER_REGISTRY }} --password-stdin
             
             docker stop $(docker ps -q --filter ancestor=${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }})
