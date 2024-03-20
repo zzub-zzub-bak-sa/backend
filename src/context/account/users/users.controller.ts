@@ -15,7 +15,8 @@ export class UsersController {
   }
 
   @Get('test') test(@Query('withError') withError?: boolean) {
-    const test_version = 'UpdatedAt: 2024.03.21 (23:46)';
+    const currentDate = new Date().toLocaleString();
+    const test_version = `UpdatedAt: ${currentDate}`;
     return test_version;
   }
 
