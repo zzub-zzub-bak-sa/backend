@@ -2,8 +2,8 @@ version: '3'
 
 services:
   app:
-    image: mokkitlink
-    container_name: mokkitlink-server-container
+    image: mokkitlink-container-registry.kr.ncr.ntruss.com/mokkitlink:latest
+    container_name: mokkitlink-container
     ports:
       - "443:443"
     env_file:
