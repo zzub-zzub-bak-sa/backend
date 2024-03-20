@@ -102,10 +102,11 @@ jobs:
             echo ${{ secrets.NCP_SECRET_KEY }} | docker login -u ${{ secrets.NCP_ACCESS_KEY }} ${{ secrets.NCP_CONTAINER_REGISTRY }} --password-stdin
             docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}:latest
             docker run -d \
+              -p 443:443 \
               -v /root/test-docker/.env:/usr/src/app/.env \
               -v /etc/letsencrypt:/etc/letsencrypt:ro \
               ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}
-          
+            docker image prune -f
       # - name: Set up Docker Compose
       #   run: |
       #     sudo rm /usr/local/bin/docker-compose
