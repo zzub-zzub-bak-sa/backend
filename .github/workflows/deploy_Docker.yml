@@ -3,7 +3,7 @@ name: Build and Push Docker Image
 on:
   push:
     branches:
-      - deploy
+      - useDocker
 
 jobs:
   build_and_push:
@@ -46,7 +46,7 @@ jobs:
       - name: Save Docker Compose Artifact
         uses: actions/upload-artifact@v2
         with:
-          name: docker-compose.yml
+          name: docker-compose
           path: ./docker-compose.yml
 
 
@@ -77,11 +77,8 @@ jobs:
       - name: Download Docker Compose Artifact
         uses: actions/download-artifact@v2
         with:
-          name: docker-compose.yml
+          name: docker-compose
           path: .
-      
-      - name: Move Docker Compose Artifact to test-docker directory
-        run: mv docker-compose/* /path/to/test-docker
       
       - name: connect ssh
         uses: appleboy/ssh-action@master
@@ -109,7 +106,7 @@ jobs:
 
             docker rm $(docker ps -aq --filter ancestor=${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }})
             docker rmi ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}:latest
-
+            
             docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}:latest
             docker run -d \
               -p 443:443 \
