@@ -3,7 +3,7 @@ name: Build and Push Docker Image
 on:
   push:
     branches:
-      - useDocker
+      - onlyDocker
 
 jobs:
   build_and_push:
@@ -79,5 +79,5 @@ jobs:
               -p 443:443 \
               -v /root/mokkitlink/.env:/usr/src/app/.env \
               -v /etc/letsencrypt:/etc/letsencrypt:ro \
-              ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}
+              ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}:latest
             docker image prune -f
