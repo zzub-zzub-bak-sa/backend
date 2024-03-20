@@ -77,8 +77,8 @@ build_and_push:
           script : | 
             docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/latest
             docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}:latest
-# docker stop $(docker ps -a -q)
-# docker rm $(docker ps -a -q)
+  # docker stop $(docker ps -a -q)
+  # docker rm $(docker ps -a -q)
             
   # pull_from_registry:
   #   name: Connect server ssh and pull from container registry
