@@ -14,6 +14,11 @@ export class UsersController {
     return { updateDate: '0311' };
   }
 
+  @Get('test') test(@Query('withError') withError?: boolean) {
+    const test_version = 'UpdatedAt: 2024.03.21 (23:46)';
+    return test_version;
+  }
+
   @Post()
   createUser(@Body() createUserDto: CreateUserDto) {
     return this.usersService.createUser(createUserDto);

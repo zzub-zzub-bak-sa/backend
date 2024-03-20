@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  app:
+    image: mokkitlink-container-registry.kr.ncr.ntruss.com/mokkitlink:latest
+    container_name: mokkitlink-container
+    ports:
+      - "443:443"
+    env_file:
+      - .env
+    volumes:
+      - /root/mokkitlink/.env:/usr/src/app/.env
+      - /etc/letsencrypt:/etc/letsencrypt:ro
