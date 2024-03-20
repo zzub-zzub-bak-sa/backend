@@ -9,14 +9,19 @@ import { ROLE } from '../account.constant';
 @Controller('/account/users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-  @Get('test')
-  getTest() {
-    return { updateDate: '0311' };
-  }
-
   @Get('test') test(@Query('withError') withError?: boolean) {
-    const currentDate = new Date().toLocaleString();
-    const test_version = `UpdatedAt: ${currentDate}`;
+    const currentDate = new Date();
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      timeZone: 'Asia/Seoul',
+    };
+    const formattedDate = currentDate.toLocaleString('ko-KR', options);
+    const test_version = `UpdatedAt: ${formattedDate}`;
     return test_version;
   }
 
