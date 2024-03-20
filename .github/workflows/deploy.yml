@@ -34,20 +34,11 @@ jobs:
         with:
           node-version: 20
 
-      - name: Create .env file
-        run: echo "DOCKER_IMAGE_TAG=latest" > .env
-
       - name: Build and Push Docker Image
         run: |
           DOCKER_IMAGE_TAG=$(cat .env | grep DOCKER_IMAGE_TAG | cut -d'=' -f2)
-          docker build -t ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}:${DOCKER_IMAGE_TAG} .
-          docker push ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}:${DOCKER_IMAGE_TAG}
-
-      - name: Save Docker Compose Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: docker-compose.yml
-          path: ./docker-compose.yml
+          docker build -t ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}:${{ secrets.DOCKER_IMAGE_TAG }} .
+          docker push ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}:${{ secrets.DOCKER_IMAGE_TAG }}
 
 
   pull_from_registry:
@@ -58,27 +49,6 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
-
-      # - name: connect ssh
-      #   uses: appleboy/ssh-action@master
-      #   with:
-      #     host: ${{ secrets.DEV_HOST }}
-      #     username: ${{ secrets.DEV_USERNAME }}
-      #     password: ${{ secrets.DEV_PASSWORD }}
-      #     port: ${{ secrets.DEV_PORT }}
-      #     script : | 
-      #       cd test-docker
-      #       if [ ! -f .env ]; then
-      #         echo "DOCKER_IMAGE_TAG=${{ secrets.DOCKER_IMAGE_TAG }}" > .env
-      #         echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
-      #         echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
-      #       fi
-
-      - name: Download Docker Compose Artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: docker-compose.yml
-          path: .
       
       - name: Move Docker Compose Artifact to test-docker directory
         run: mv docker-compose.yml /test-docker
@@ -102,6 +72,10 @@ jobs:
               echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
             fi
 
+            if [ ! -f docker-compose.yml ]; then
+              curl -o docker-compose.yml https://raw.githubusercontent.com/zzub-zzub-bak-sa/backend/deploy/docker-compose.yml
+            fi
+
             echo ${{ secrets.NCP_SECRET_KEY }} | docker login -u ${{ secrets.NCP_ACCESS_KEY }} ${{ secrets.NCP_CONTAINER_REGISTRY }} --password-stdin
             
 
@@ -111,23 +85,5 @@ jobs:
             docker rmi ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}:latest
 
             docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}:latest
-            docker run -d \
-              -p 443:443 \
-              -v /root/test-docker/.env:/usr/src/app/.env \
-              -v /etc/letsencrypt:/etc/letsencrypt:ro \
-              ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}
+            docker-compose up -d
             docker image prune -f
-      # - name: Set up Docker Compose
-      #   run: |
-      #     sudo rm /usr/local/bin/docker-compose
-      #     sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-      #     sudo chmod +x /usr/local/bin/docker-compose
-
-      # - name: Set up Node.js for Deploy
-      #   uses: actions/setup-node@v3
-      #   with:
-      #     node-version: 20  # 이 부분을 업데이트합니다.
-      
-      # - name: Deploy with Docker Compose
-      #   run: |
-      #     docker-compose up -d

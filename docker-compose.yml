@@ -4,6 +4,9 @@ services:
   app:
     image: mokkitlink-container-registry.kr.ncr.ntruss.com/mokkitlink:latest
     ports:
-      - "80:80"
+      - "443:443"
     env_file:
       - .env
+    volumes:
+      - /root/test-docker/.env:/usr/src/app/.env
+      - /etc/letsencrypt:/etc/letsencrypt:ro
