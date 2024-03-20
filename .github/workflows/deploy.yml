@@ -13,15 +13,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      # Cache node modules to speed up builds
-      - name: Cache node modules
-        uses: actions/cache@v2
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
       - name: Login to NCP Container Registry
         uses: docker/login-action@v2
         with:
@@ -78,7 +69,6 @@ jobs:
             sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
             sudo chmod +x /usr/local/bin/docker-compose
             sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-
 
             docker stop $(docker ps -q --filter ancestor=${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }})
 

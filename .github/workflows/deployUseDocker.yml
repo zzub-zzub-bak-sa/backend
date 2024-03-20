@@ -13,7 +13,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      # Cache node modules to speed up builds
       - name: Cache node modules
         uses: actions/cache@v2
         with:
@@ -34,21 +33,11 @@ jobs:
         with:
           node-version: 20
 
-      - name: Create .env file
-        run: echo "DOCKER_IMAGE_TAG=latest" > .env
-
       - name: Build and Push Docker Image
         run: |
           DOCKER_IMAGE_TAG=$(cat .env | grep DOCKER_IMAGE_TAG | cut -d'=' -f2)
-          docker build -t ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}:${DOCKER_IMAGE_TAG} .
-          docker push ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}:${DOCKER_IMAGE_TAG}
-
-      - name: Save Docker Compose Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: docker-compose
-          path: ./docker-compose.yml
-
+          docker build -t ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}:${{ secrets.DOCKER_IMAGE_TAG }} .
+          docker push ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}:${{ secrets.DOCKER_IMAGE_TAG }}
 
   pull_from_registry:
     runs-on: ubuntu-latest
@@ -59,27 +48,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      # - name: connect ssh
-      #   uses: appleboy/ssh-action@master
-      #   with:
-      #     host: ${{ secrets.DEV_HOST }}
-      #     username: ${{ secrets.DEV_USERNAME }}
-      #     password: ${{ secrets.DEV_PASSWORD }}
-      #     port: ${{ secrets.DEV_PORT }}
-      #     script : | 
-      #       cd mokkitlinkMain
-      #       if [ ! -f .env ]; then
-      #         echo "DOCKER_IMAGE_TAG=${{ secrets.DOCKER_IMAGE_TAG }}" > .env
-      #         echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
-      #         echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
-      #       fi
-
-      - name: Download Docker Compose Artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: docker-compose
-          path: .
-      
       - name: connect ssh
         uses: appleboy/ssh-action@master
         with:
@@ -91,6 +59,7 @@ jobs:
             if [ ! -d "mokkitlinkMain" ]; then
               mkdir mokkitlinkMain
             fi
+
             cd mokkitlinkMain || exit
 
             if [ ! -f .env ]; then
@@ -101,7 +70,6 @@ jobs:
 
             echo ${{ secrets.NCP_SECRET_KEY }} | docker login -u ${{ secrets.NCP_ACCESS_KEY }} ${{ secrets.NCP_CONTAINER_REGISTRY }} --password-stdin
             
-
             docker stop $(docker ps -q --filter ancestor=${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }})
 
             docker rm $(docker ps -aq --filter ancestor=${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }})
@@ -114,17 +82,3 @@ jobs:
               -v /etc/letsencrypt:/etc/letsencrypt:ro \
               ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}
             docker image prune -f
-      # - name: Set up Docker Compose
-      #   run: |
-      #     sudo rm /usr/local/bin/docker-compose
-      #     sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-      #     sudo chmod +x /usr/local/bin/docker-compose
-
-      # - name: Set up Node.js for Deploy
-      #   uses: actions/setup-node@v3
-      #   with:
-      #     node-version: 20  # 이 부분을 업데이트합니다.
-      
-      # - name: Deploy with Docker Compose
-      #   run: |
-      #     docker-compose up -d
