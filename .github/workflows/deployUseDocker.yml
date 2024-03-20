@@ -78,5 +78,5 @@ jobs:
             docker rmi ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}:latest
             
             docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}:latest
-            docker run -d -p 443:443 -v /root/mokkitlink/.env:/usr/src/app/.env -v /etc/letsencrypt:/etc/letsencrypt:ro ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}:latest
+            docker run -d -p 443:443 -v /root/mokkitlink/.env:/usr/src/app/.env:ro -v /etc/letsencrypt:/etc/letsencrypt:ro ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}:latest
             docker image prune -f

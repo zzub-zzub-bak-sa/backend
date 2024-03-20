@@ -19,4 +19,4 @@ RUN npm run build \
     npm install --production=true
 
 # 컨테이너 실행 시 실행될 명령어
-CMD ["npm", "run", "start"]
+CMD ["npm", "run", "start:prod"]
