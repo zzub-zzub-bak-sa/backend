@@ -81,7 +81,7 @@ jobs:
           path: .
       
       - name: Move Docker Compose Artifact to test-docker directory
-        run: mv docker-compose/* /path/to/test-docker
+        run: mv docker-compose.yml /test-docker
       
       - name: connect ssh
         uses: appleboy/ssh-action@master
