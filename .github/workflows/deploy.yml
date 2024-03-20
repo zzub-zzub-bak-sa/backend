@@ -82,6 +82,12 @@ jobs:
           name: docker-compose
           path: .
 
+      - name: Download .env Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: env
+          path: test-docker/
+
       - name: Login to NCP Container Registry
         uses: docker/login-action@v2
         with:
