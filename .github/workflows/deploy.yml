@@ -50,7 +50,7 @@ jobs:
           path: ./docker-compose.yml
 
 
-  pull_and_deploy:
+  pull_from_registry:
     runs-on: ubuntu-latest
 
     needs: build_and_push
@@ -73,34 +73,42 @@ jobs:
           username: ${{ secrets.DEV_USERNAME }}
           password: ${{ secrets.DEV_PASSWORD }}
           port: ${{ secrets.DEV_PORT }}
-      
-      - name: connect ssh2
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.DEV_HOST }}
-          username: ${{ secrets.DEV_USERNAME }}
-          password: ${{ secrets.DEV_PASSWORD }}
-          port: ${{ secrets.DEV_PORT }}
           script : | 
-            sudo docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}:latest
-  # docker stop $(docker ps -a -q)
-  # docker rm $(docker ps -a -q)
-            
-  # pull_from_registry:
-  #   name: Connect server ssh and pull from container registry
-  #   needs: push_to_registry
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: connect ssh
-  #       uses: appleboy/ssh-action@master
-  #       with:
-  #         host: ${{ secrets.DEV_HOST }}
-  #         username: ${{ secrets.DEV_USERNAME }}
-  #         password: ${{ secrets.DEV_PASSWORD }}
-  #         port: ${{ secrets.DEV_PORT }}
-  #         script: |
-  #           docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/tag-name
-  #           docker stop $(docker ps -a -q)
-  #           docker rm $(docker ps -a -q)
-  #           docker run -d -p 3000:80 --env-file ${{ secrets.ENV_FILENAME_FRONTEND }} ${{ secrets.NCP_CONTAINER_REGISTRY }}/tag-name
-  #           docker image prune -f
+            mkdir test-docker
+            cd test-docker
+            # .env 파일이 없으면 생성하고 초기값 설정
+            if [ ! -f .env ]; then
+              echo "DOCKER_IMAGE_TAG=latest" > .env
+            fi
+
+            # DOCKER_IMAGE_TAG 값을 .env 파일에서 읽어오기
+            export DOCKER_IMAGE_TAG=$(cat .env | grep DOCKER_IMAGE_TAG | cut -d'=' -f2)
+
+            # .env 파일에 DOCKER_IMAGE_TAG 설정
+            echo "DOCKER_IMAGE_TAG=${DOCKER_IMAGE_TAG}" > .env
+      
+      - name: Login to NCP Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ secrets.NCP_CONTAINER_REGISTRY }}
+          username: ${{ secrets.NCP_ACCESS_KEY }}
+          password: ${{ secrets.NCP_SECRET_KEY }}
+
+      - name: Pull Docker Image
+        run: |
+          docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}:latest
+
+      # - name: Set up Docker Compose
+      #   run: |
+      #     sudo rm /usr/local/bin/docker-compose
+      #     sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+      #     sudo chmod +x /usr/local/bin/docker-compose
+
+      # - name: Set up Node.js for Deploy
+      #   uses: actions/setup-node@v3
+      #   with:
+      #     node-version: 20  # 이 부분을 업데이트합니다.
+      
+      # - name: Deploy with Docker Compose
+      #   run: |
+      #     docker-compose up -d
