@@ -27,7 +27,6 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          DOCKER_IMAGE_TAG=$(cat .env | grep DOCKER_IMAGE_TAG | cut -d'=' -f2)
           docker build -t ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}:${{ secrets.DOCKER_IMAGE_TAG }} .
           docker push ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}:${{ secrets.DOCKER_IMAGE_TAG }}
 
@@ -49,10 +48,10 @@ jobs:
           password: ${{ secrets.DEV_PASSWORD }}
           port: ${{ secrets.DEV_PORT }}
           script : | 
-            if [ ! -d "mokkitlinkMain" ]; then
-              mkdir mokkitlinkMain
+            if [ ! -d "mokkitlink" ]; then
+              mkdir mokkitlink
             fi
-            cd mokkitlinkMain || exit
+            cd mokkitlink || exit
 
             if [ ! -f .env ]; then
               echo "DOCKER_IMAGE_TAG=${{ secrets.DOCKER_IMAGE_TAG }}" > .env
