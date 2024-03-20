@@ -5,3 +5,5 @@ services:
     image: mokkitlink-container-registry.kr.ncr.ntruss.com/mokkitlink:latest
     ports:
       - "80:80"
+    env_file:
+      - .env
