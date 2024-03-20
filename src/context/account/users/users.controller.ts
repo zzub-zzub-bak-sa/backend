@@ -11,7 +11,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get('test') test(@Query('withError') withError?: boolean) {
-    const test_version = 'UpdatedAt: 2024.03.19';
+    const test_version = 'UpdatedAt: 2024.03.20';
     return test_version;
   }
 

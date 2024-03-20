@@ -58,10 +58,10 @@ jobs:
           password: ${{ secrets.DEV_PASSWORD }}
           port: ${{ secrets.DEV_PORT }}
           script : | 
-            if [ ! -d "test-docker" ]; then
-              mkdir test-docker
+            if [ ! -d "mokkitlinkMain" ]; then
+              mkdir mokkitlinkMain
             fi
-            cd test-docker || exit
+            cd mokkitlinkMain || exit
 
             if [ ! -f .env ]; then
               echo "DOCKER_IMAGE_TAG=${{ secrets.DOCKER_IMAGE_TAG }}" > .env

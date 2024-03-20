@@ -67,7 +67,7 @@ jobs:
       #     password: ${{ secrets.DEV_PASSWORD }}
       #     port: ${{ secrets.DEV_PORT }}
       #     script : | 
-      #       cd test-docker
+      #       cd mokkitlinkMain
       #       if [ ! -f .env ]; then
       #         echo "DOCKER_IMAGE_TAG=${{ secrets.DOCKER_IMAGE_TAG }}" > .env
       #         echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
@@ -88,10 +88,10 @@ jobs:
           password: ${{ secrets.DEV_PASSWORD }}
           port: ${{ secrets.DEV_PORT }}
           script : | 
-            if [ ! -d "test-docker" ]; then
-              mkdir test-docker
+            if [ ! -d "mokkitlinkMain" ]; then
+              mkdir mokkitlinkMain
             fi
-            cd test-docker || exit
+            cd mokkitlinkMain || exit
 
             if [ ! -f .env ]; then
               echo "DOCKER_IMAGE_TAG=${{ secrets.DOCKER_IMAGE_TAG }}" > .env
@@ -110,7 +110,7 @@ jobs:
             docker pull ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}:latest
             docker run -d \
               -p 443:443 \
-              -v /root/test-docker/.env:/usr/src/app/.env \
+              -v /root/mokkitlinkMain/.env:/usr/src/app/.env \
               -v /etc/letsencrypt:/etc/letsencrypt:ro \
               ${{ secrets.NCP_CONTAINER_REGISTRY }}/${{ secrets.NCP_CONTAINER_REPO }}
             docker image prune -f

@@ -9,5 +9,5 @@ services:
     env_file:
       - .env
     volumes:
-      - /root/test-docker/.env:/usr/src/app/.env
+      - /root/mokkitlinkMain/.env:/usr/src/app/.env
       - /etc/letsencrypt:/etc/letsencrypt:ro
