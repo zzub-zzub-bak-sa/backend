@@ -1,73 +1,52 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+## 📜 서비스 내용
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+> **먹킷링크는 맛집에 대한 정보를 링크로 모을 수 있도록 도와주는 모바일 앱 서비스입니다.**
+> 
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+<img width="650" alt="서비스 소개" src="https://github.com/zzub-zzub-bak-sa/backend/assets/54920289/ed82cfe3-752d-4f63-b5e8-b95c5ad66167">
 
-## Description
+## 🛠 기술 스택
+<img width="650" alt="아키텍쳐" src="https://github.com/zzub-zzub-bak-sa/backend/assets/54920289/bdeb3356-a3fc-4877-90bf-8f64ed03f843">
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-.
-## Installation
 
-```bash
-$ npm install
-```
+- **언어**: TypeScript
+- **프레임워크**: NestJS
+- **데이터베이스**: MySQL, NCP Cloud DB
+- **ORM**: Prisma
+- **Deploy**: NCP Server, NCP Global DNS
+- **CI/CD**: Docker, Docker Compose, NCP Registry, GitHub, GitHub Actions
+- **HTTPS**: Cerbot
 
-## Running the app
+## 개발 기능
 
-```bash
-# development
-$ npm run start
+<img width="650" alt="기능1" src="https://github.com/zzub-zzub-bak-sa/backend/assets/54920289/f06c8029-24c6-4662-8c4a-07362dbe30e1">
 
-# watch mode
-$ npm run start:dev
+<img width="650" alt="기능2" src="https://github.com/zzub-zzub-bak-sa/backend/assets/54920289/9fc16603-7756-4c01-8ac2-e92c70cc9949">
 
-# production mode
-$ npm run start:prod
-```
+<img width="650" alt="기능3" src="https://github.com/zzub-zzub-bak-sa/backend/assets/54920289/17b9761f-0b8c-4ac8-ae53-d3ca396d5279">
 
-## Test
 
-```bash
-# unit tests
-$ npm run test
 
-# e2e tests
-$ npm run test:e2e
+## 개발 기간
+### 2024년 1월 24일 ~ 2024년 2월 4일
 
-# test coverage
-$ npm run test:cov
-```
 
-## Support
+**초반부 (1/24 ~ 1/26)**
+- 팀빌딩
+- 아이디에이션
+- 주제 선정
+- 그라운드 룰 설정
+- MVP 수립 
+- 프로젝트 초기 세팅
+  
+**중반부 (1/27 ~ 2/2)**
+- 기획 구체화
+- 디자인 작업
+- 개발 진행
+  
+**후반부 (2/3 ~ 2/4)**
+- 테스트 및 수정
+- 소개서 및 시연 영상 제작
+- 추후 계획 수립
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+[먹킷링크_서비스소개서.pdf](https://github.com/zzub-zzub-bak-sa/backend/files/15153739/_.pdf)
